@@ -33,7 +33,7 @@ app.get('/vote/:uid/:dir', function(request, response, next) {
             console.log("Tasks: updateTask() - ", result);
         });
     } while (false);
-    response.JSON(rtn);
+    response.json(rtn);
 
 });
 
