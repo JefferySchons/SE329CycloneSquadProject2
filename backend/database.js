@@ -5,11 +5,7 @@ var fs = require("fs");
 var con_details = JSON.parse(fs.readFileSync('mysql_info.json'));
 
 // First you need to create a connection to the db
-var con = mysql.createConnection({
-  host: con_details.host,
-  user: con_details.user,
-  password: con_details.pass
-});
+var con = mysql.createConnection(con_details);
 
 con.connect(function(err){
   if(err){
