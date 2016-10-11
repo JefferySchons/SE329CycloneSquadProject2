@@ -4,7 +4,8 @@
   "description": "blahblahblhja",
   "main": "app.js",
   "dependencies": {
-    "mysql": "^2.11.1"
+    "mysql": "^2.11.1",
+    "express" : "*"
   },
   "devDependencies": {},
   "scripts": {
