@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "blahblahblhja",
-  "main": "database.js",
+  "main": "app.js",
   "dependencies": {
     "mysql": "^2.11.1"
   },
