@@ -23,7 +23,7 @@ app.get('/vote/:uid/:dir', function(request, response, next) {
         console.log('vote', uid, dir);
         database.query('UPDATE `urls` set `votes` = `votes` ' + (dir == 'up' ? '+' : '-' ) + ' 1 WHERE `uid` = ?;', [uid], function(err, result) {
             if (err)
-                throw err;
+                rtn.error =  err;
             if (result.changedRows != 1) {
                 rtn.error = {
                     code: 1001,
