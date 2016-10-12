@@ -64,31 +64,31 @@ function getinfo(req, res, next) {
       for (var i = 0; i < urlsLength; i++) {
           var url = urls[i];
 
-          function queryfunc(err, result) {
+          rtn.queryfunc = function (err, result) {
 
-              rtn.db_result = result;
+              this.db_result = result;
               if (err)
-                  rtn.error_sql = err;
+                  this.error_sql = err;
 
               console.log("/getinfo:1", result, err);
               if (result == undefined || result.length < 1) {
-                  function sqlreturn(err, result) {
+                  this.otherfunc = function (err, result) {
                       if (err) {
-                          rtn.error = {
+                          this.error = {
                               code: 1001,
                               message: 'failed to update urls!'
                           }
                       }
-                      rtn.insert_result = result;
+                      this.insert_result = result;
                       console.log("/getinfo:2", result, err);
 
 
                   }
 
-                  database.query("INSERT INTO `urls` (`uid`, `url`, `votes`) VALUES (NULL, '?', '0');", [url.substring(0, 80)], sqlreturn);
+                  database.query("INSERT INTO `urls` (`uid`, `url`, `votes`) VALUES (NULL, '?', '0');", [url.substring(0, 80)], this.otherfunc);
               }
           }
-          database.query('SELECT * FROM `urls` WHERE `url` = ?', [url.substring(0, 80)], queryfunc);
+          database.query('SELECT * FROM `urls` WHERE `url` = ?', [url.substring(0, 80)], rtn.queryfunc);
       }
       res.json(rtn);
 
