@@ -34,7 +34,6 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
             break;
         }
         console.log('vote', uid, dir);
-    }
     database.query('UPDATE `urls` set `votes` = `votes` ' + (dir == 'up' ? '+' : '-') + ' 1 WHERE `uid` = ?;', [uid], function(err, result) {
         rtn.db_result = result;
         if (err)
@@ -47,8 +46,7 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
             console.log("/vote/" + uid + "/" + dir + " - ", result);
         }
     });
-}
-while (false); res.json(rtn);
+} while (false); res.json(rtn);
 
 });
 
