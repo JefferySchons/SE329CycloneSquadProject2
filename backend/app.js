@@ -52,11 +52,12 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
 
 });
 
-app.post('/getinfo', function(req, res, next) {
     var rtn = {};
+app.post('/getinfo', function(req, res, next) {
     var data = req.body;
     var urls = data.urls;
     var urlsLength = urls.length;
+    rtn = {};
     rtn.poop = "true";
     for (var i = 0; i < urlsLength; i++) {
         var url = urls[i];
@@ -68,7 +69,7 @@ app.post('/getinfo', function(req, res, next) {
                 rtn.error_sql = err;
 
             console.log("/getinfo:1", result, err);
-            if (result.length < 1) {
+            if (result == undefined || result.length < 1) {
                 function sqlreturn(err, result) {
                     if (err) {
                         rtn.error = {
