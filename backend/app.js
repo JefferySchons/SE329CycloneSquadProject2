@@ -53,43 +53,46 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
 });
 
     var rtn = {};
-app.post('/getinfo', function(req, res, next) {
-    var data = req.body;
-    var urls = data.urls;
-    var urlsLength = urls.length;
-    rtn = {};
-    rtn.poop = "true";
-    for (var i = 0; i < urlsLength; i++) {
-        var url = urls[i];
+app.post('/getinfo', getinfo);
 
-        function queryfunc(err, result) {
+function getinfo(req, res, next) {
+      var data = req.body;
+      var urls = data.urls;
+      var urlsLength = urls.length;
+      rtn = {};
+      rtn.poop = "true";
+      for (var i = 0; i < urlsLength; i++) {
+          var url = urls[i];
 
-            rtn.db_result = result;
-            if (err)
-                rtn.error_sql = err;
+          function queryfunc(err, result) {
 
-            console.log("/getinfo:1", result, err);
-            if (result == undefined || result.length < 1) {
-                function sqlreturn(err, result) {
-                    if (err) {
-                        rtn.error = {
-                            code: 1001,
-                            message: 'failed to update urls!'
-                        }
-                    }
-                    rtn.insert_result = result;
-                    console.log("/getinfo:2", result, err);
+              rtn.db_result = result;
+              if (err)
+                  rtn.error_sql = err;
+
+              console.log("/getinfo:1", result, err);
+              if (result == undefined || result.length < 1) {
+                  function sqlreturn(err, result) {
+                      if (err) {
+                          rtn.error = {
+                              code: 1001,
+                              message: 'failed to update urls!'
+                          }
+                      }
+                      rtn.insert_result = result;
+                      console.log("/getinfo:2", result, err);
 
 
-                }
+                  }
 
-                database.query("INSERT INTO `urls` (`uid`, `url`, `votes`) VALUES (NULL, '?', '0');", [url.substring(0, 80)], sqlreturn);
-            }
-        }
-        database.query('SELECT * FROM `urls` WHERE `url` = ?', [url.substring(0, 80)], queryfunc);
-    }
-    res.json(rtn);
-});
+                  database.query("INSERT INTO `urls` (`uid`, `url`, `votes`) VALUES (NULL, '?', '0');", [url.substring(0, 80)], sqlreturn);
+              }
+          }
+          database.query('SELECT * FROM `urls` WHERE `url` = ?', [url.substring(0, 80)], queryfunc);
+      }
+      res.json(rtn);
+
+}
 
 app.listen(3000, function() {
     console.log('Example app listening on port 3000!');
