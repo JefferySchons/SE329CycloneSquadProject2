@@ -35,49 +35,57 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
             break;
         }
         console.log('vote', uid, dir);
-    database.query('UPDATE `urls` set `votes` = `votes` ' + (dir == 'up' ? '+' : '-') + ' 1 WHERE `uid` = ?;', [uid], function(err, result) {
-        rtn.db_result = result;
-        if (err)
-            rtn.error = err;
-        if (result.changedRows < 1) {
-            rtn.error = {
-                code: 1001,
-                message: 'failed to update votes!'
+        database.query('UPDATE `urls` set `votes` = `votes` ' + (dir == 'up' ? '+' : '-') + ' 1 WHERE `uid` = ?;', [uid], function(err, result) {
+            rtn.db_result = result;
+            if (err)
+                rtn.error = err;
+            if (result.changedRows < 1) {
+                rtn.error = {
+                    code: 1001,
+                    message: 'failed to update votes!'
+                }
+                console.log("/vote/" + uid + "/" + dir + " - ", result);
             }
-            console.log("/vote/" + uid + "/" + dir + " - ", result);
-        }
-    });
-} while (false); res.json(rtn);
+        });
+    } while (false);
+    res.json(rtn);
 
 });
 
 app.post('/getinfo', function(req, res, next) {
-var rtn = {};
+    var rtn = {};
     var data = req.body;
     var urls = data.urls;
     var urlsLength = urls.length;
     rtn.poop = "true";
     for (var i = 0; i < urlsLength; i++) {
         var url = urls[i];
-        database.query('SELECT * FROM `urls` WHERE `url` = ?', [url.substring(0, 80)], function(err, result) {
+
+        function queryfunc(err, result) {
+
             rtn.db_result = result;
             if (err)
                 rtn.error_sql = err;
 
             console.log("/getinfo:1", result, err);
             if (result.length < 1) {
-              database.query("INSERT INTO `urls` (`uid`, `url`, `votes`) VALUES (NULL, '?', '0');", [url.substring(0, 80)], function(err, result) {
-                if(err){
-                  rtn.error = {
-                      code: 1001,
-                      message: 'failed to update urls!'
-                  }
-                }
-                rtn.insert_result = result;
-              });
+                function sqlreturn(err, result) {
+                    if (err) {
+                        rtn.error = {
+                            code: 1001,
+                            message: 'failed to update urls!'
+                        }
+                    }
+                    rtn.insert_result = result;
+                    console.log("/getinfo:2", result, err);
 
+
+                }
+
+                database.query("INSERT INTO `urls` (`uid`, `url`, `votes`) VALUES (NULL, '?', '0');", [url.substring(0, 80)], sqlreturn);
             }
-        });
+        }
+        database.query('SELECT * FROM `urls` WHERE `url` = ?', [url.substring(0, 80)], queryfunc);
     }
     res.json(rtn);
 });
