@@ -23,7 +23,7 @@ app.get('/', function(req, res) {
 app.get('/vote/:uid/:dir', function(req, res, next) {
     var uid = req.params.uid;
     var dir = req.params.dir; //must be up or down
-    rtn = {};
+    var rtn = {};
     rtn.uid = uid;
     rtn.dir = dir;
     do {
@@ -52,6 +52,7 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
 });
 
 app.post('/getinfo', function(req, res, next) {
+var rtn = {};
     var data = req.body;
     var urls = data.urls;
     var urlsLength = urls.length;
