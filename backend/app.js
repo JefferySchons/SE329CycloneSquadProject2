@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var database = require('./database');
+var bodyParser = require('body-parser');
 
 app.use(bodyParser.json({
     type: 'application/json'
@@ -70,7 +71,6 @@ app.post('/getinfo', function(req, res, next) {
             }
         });
     }
-}
 });
 
 app.listen(3000, function() {
