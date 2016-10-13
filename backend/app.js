@@ -55,6 +55,18 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
     var rtn = {};
 app.post('/getinfo', getinfo);
 
+function rtn_init(){
+  var rtn = {};
+}
+
+function rtn_add(key, value){
+  rtn[key] = value;
+}
+
+function rtn_get(){
+  return rtn;
+}
+
 function getinfo(req, res, next) {
       var data = req.body;
       var urls = data.urls;
@@ -67,7 +79,7 @@ function getinfo(req, res, next) {
 
           rtn.queryfunc = function (err, result) {
 
-              this.db_result = result;
+              rtn_add('db_result', result);
               if (err)
                   this.error_sql = err;
 
