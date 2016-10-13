@@ -61,6 +61,7 @@ function getinfo(req, res, next) {
       var urlsLength = urls.length;
       rtn = {};
       rtn.poop = "true";
+      rtn.urls = urls;
       for (var i = 0; i < urlsLength; i++) {
           var url = urls[i];
 
