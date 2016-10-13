@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
   var extractor = require('unfluff');
   var keywordParser = require('./tfidf')
   var https = require('https');
+  var fs = require('fs');
 
   https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/vps.boschwitz.me/privkey.pem'),
