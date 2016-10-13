@@ -5,7 +5,12 @@ var bodyParser = require('body-parser');
   var request = require('request');
   var extractor = require('unfluff');
   var keywordParser = require('./tfidf')
+  var https = require('https');
 
+  https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/vps.boschwitz.me/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/vps.boschwitz.me/cert.pem')
+  }, app).listen(8443);
 // var fs = require('fs')
 // var https = require('https')
 //
@@ -150,9 +155,9 @@ app.post('/keywords',function(req,res,next){
     request(data.urls[i], getResponse);
 });
 
-app.listen(3000, function() {
-    console.log('Example app listening on port 3000!');
-});
+// app.listen(3000, function() {
+//     console.log('Example app listening on port 3000!');
+// });
 
 // var idf = require('./tfidf');
 // idf.searchPage();
