@@ -2,29 +2,35 @@ module.exports = {};
 var natural = require('natural'),
     TfIdf = natural.TfIdf;
 
-    function searchPage() {
-        tfidf = new TfIdf();
+function searchPages(data) {
+    tfidf = new TfIdf();
 
-        // tfidf.addDocument('this document is about ruby.');
-        // tfidf.addDocument('this document is about node.');
-        // tfidf.addDocument('this document is about ruby and node.');
-        tfidf.addDocument('this document is about node. it has node examples');
+    // tfidf.addDocument('this document is about ruby.');
+    // tfidf.addDocument('this document is about node.');
+    // tfidf.addDocument('this document is about ruby and node.');
+    for (var i = 0; i < data.length; i++)
+        tfidf.addDocument(data[i]);
 
-        console.log('node --------------------------------');
-        tfidf.tfidfs('node', function(i, measure) {
-            console.log('document #' + i + ' is ' + measure);
-        });
+    //it's possible to retrieve a list of all terms in a document, sorted by their importance.
 
-        console.log('ruby --------------------------------');
-        tfidf.tfidfs('ruby', function(i, measure) {
-            console.log('document #' + i + ' is ' + measure);
-        });
+    var rtn = [];
+    var i = 0;
 
-        //it's possible to retrieve a list of all terms in a document, sorted by their importance.
 
-        tfidf.listTerms(3 /*document index*/ ).forEach(function(item) {
-            console.log(item.term + ': ' + item.tfidf);
-        });
+
+    for (i = 0; i < data.length; i++) {
+      function eachthing(item) {
+          if (!rtn[i])
+              rtn[i] = [];
+          rtn[i].push({
+              term: item.term,
+              rank: item.tfidf
+          });
+      }
+        tfidf.listTerms(i).forEach(eachthing);
     }
 
-module.exports.searchPage = searchPage;
+    return rtn;
+}
+
+module.exports.searchPages = searchPages;

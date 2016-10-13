@@ -2,6 +2,29 @@ var express = require('express');
 var app = express();
 var database = require('./database');
 var bodyParser = require('body-parser');
+  var request = require('request');
+  var extractor = require('unfluff');
+  var keywordParser = require('./tfidf')
+
+// var fs = require('fs')
+// var https = require('https')
+//
+// var ports = process.env.NODE_ENV === 'production'
+//   ? [80, 443]
+//   : [3442, 3443]
+//
+// var app = express()
+//
+// var server = https.createServer(
+//   {
+//     key: fs.readFileSync('./tls/key.pem'),
+//     cert: fs.readFileSync('./tls/cert.pem')
+//   },
+//   app
+// )
+
+// server.listen(ports[1])
+// app.listen(ports[0])
 
 app.use(bodyParser.json({
     type: 'application/json'
@@ -15,6 +38,8 @@ app.use(bodyParser.text({
 app.use(bodyParser.text({
     type: ''
 }));
+
+console.log(request.get('https://www.google.com').body);
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'https://www.google.com');
@@ -101,9 +126,33 @@ app.post('/geturl', function(req, res, next) {
 
 });
 
+app.post('/keywords',function(req,res,next){
+  var data = req.body;
+  data.size = data.urls.length;
+  data.parsed = [];
+
+  function getResponse(error, response, html) {
+    if(error)throw error;
+    if (!error && response.statusCode == 200) {
+      var t = extractor(html).text;
+      data.parsed.push(t);
+      console.log(t);
+      console.log(data.parsed.length)
+      if(data.parsed.length == data.size){
+        //do the keyword parsing
+        var d = keywordParser.searchPages(data.parsed);
+        console.log(d);
+        res.json({keywords: d});
+      }
+    }
+  }
+  for(var i = 0; i < data.size; i++)
+    request(data.urls[i], getResponse);
+});
+
 app.listen(3000, function() {
     console.log('Example app listening on port 3000!');
 });
 
-var idf = require('./tfidf');
-idf.searchPage();
+// var idf = require('./tfidf');
+// idf.searchPage();
