@@ -87,6 +87,7 @@ app.post('/geturl', function(req, res, next) {
             return;
         }
         rtn.data = rows;
+        rtn.data[0].uid = Number(rtn.data[0].uid);
         res.json(rtn);
     }
 
