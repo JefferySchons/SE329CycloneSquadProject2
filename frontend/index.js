@@ -1,17 +1,15 @@
 var data = [];
 
-//doesn't fire when you search, wouldn't use this
-// $(window).on('load', function() {
-//     alert('loaded');
-//     loadit();
-// });
+$(window).on('load', function() {
+    window.setTimeout(loadit, 1000);
+});
 
 
 
-/*
+
 //to fire loadit whenever someone does a new search, i'd do something like
 
-$('.lsb').onclick(function(){
+$('.lsb').click(function(){
 loadit()
 });
 
@@ -24,11 +22,12 @@ $('#lst-ib').keypress(function(e){
 });
 
 //should do it (I think)
-*/
+
 
 
 function loadit() {
   console.log('loadingit')
+    var len = $('.rc').length;
     $('.rc').each(function(i) {
         var x = data[i] = {};
         x.index = i;
@@ -40,9 +39,13 @@ function loadit() {
             console.log(data);
             x.uid = data.data[0].uid;
             x.votes = data.data[0].votes;
-            
+
             // here is the best place you could inject your html into the element using x.element.innerHTML or something
 
+            if(i == len - 1) {
+              //everything is done loading
+              loadkeywords();
+            }
         }
         $.ajax({
             type: 'POST',
@@ -55,6 +58,37 @@ function loadit() {
             success: handledata
         });
     });
+}
+
+
+function loadkeywords(){
+//must run after loadit
+console.log('loadkeywords')
+console.log(data.length)
+  var urls = [];
+  for(var i = 0; i < data.length; i++){
+    urls.push(data[i].url)
+  }
+
+  function handledata(rtn) {
+    console.log(rtn);
+      for(var i = 0; i < rtn.keywords.length; i++){
+        data[i].keywords = rtn.keywords[i];
+      }
+  }
+  console.log({
+      urls: urls
+  });
+  $.ajax({
+      type: 'POST',
+      url: "https://vps.boschwitz.me:8443/keywords",
+      data: JSON.stringify({
+          urls: urls
+      }),
+      contentType: 'application/json',
+      dataType: 'json',
+      success: handledata
+  });
 }
 
 

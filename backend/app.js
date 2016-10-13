@@ -2,16 +2,16 @@ var express = require('express');
 var app = express();
 var database = require('./database');
 var bodyParser = require('body-parser');
-  var request = require('request');
-  var extractor = require('unfluff');
-  var keywordParser = require('./tfidf')
-  var https = require('https');
-  var fs = require('fs');
+var request = require('request');
+var extractor = require('unfluff');
+var keywordParser = require('./tfidf')
+var https = require('https');
+var fs = require('fs');
 
-  https.createServer({
+https.createServer({
     key: fs.readFileSync('../../privkey.pem'),
     cert: fs.readFileSync('../../cert.pem')
-  }, app).listen(8443);
+}, app).listen(8443);
 // var fs = require('fs')
 // var https = require('https')
 //
@@ -125,35 +125,42 @@ app.post('/geturl', function(req, res, next) {
     function secondquery(err, rows, fields) {
         if (err)
             throw err;
-        database.query('SELECT * FROM `urls` WHERE `url` = ?', [data.url.substring(0,80)], firstquery);
+        database.query('SELECT * FROM `urls` WHERE `url` = ?', [data.url.substring(0, 80)], firstquery);
     }
 
-    database.query('SELECT * FROM `urls` WHERE `url` = ?', [data.url.substring(0,80)], firstquery);
+    database.query('SELECT * FROM `urls` WHERE `url` = ?', [data.url.substring(0, 80)], firstquery);
 
 });
 
-app.post('/keywords',function(req,res,next){
-  var data = req.body;
-  data.size = data.urls.length;
-  data.parsed = [];
+app.post('/keywords', function(req, res, next) {
+    var data = req.body;
+    data.size = data.urls.length;
+    data.parsed = [];
 
-  function getResponse(error, response, html) {
-    if(error){console.log( error);
-    html = "blank"}
-      var t = extractor(html).text;
-      data.parsed.push(t);
-      console.log(t);
-      console.log(data.parsed.length)
-      if(data.parsed.length == data.size){
-        //do the keyword parsing
-        var d = keywordParser.searchPages(data.parsed);
-        console.log(d);
-        res.json({keywords: d});
-      }
-    
-  }
-  for(var i = 0; i < data.size; i++)
-    request(data.urls[i], getResponse);
+    function getResponse(error, response, html) {
+        if (error) {
+            console.log(error);
+            html = "blank"
+        }
+        var t = extractor(html).text;
+        data.parsed.push(t);
+        console.log(t);
+        console.log(data.parsed.length)
+        if (data.parsed.length == data.size) {
+            //do the keyword parsing
+            var d = keywordParser.searchPages(data.parsed);
+            console.log(d);
+            res.json({
+                keywords: d
+            });
+        }
+
+    }
+    for (var i = 0; i < data.size; i++)
+        request({
+            method: 'GET',
+            uri: data.urls[i]
+        }, getResponse);
 });
 
 // app.listen(3000, function() {
