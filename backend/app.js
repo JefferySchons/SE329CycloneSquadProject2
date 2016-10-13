@@ -138,8 +138,8 @@ app.post('/keywords',function(req,res,next){
   data.parsed = [];
 
   function getResponse(error, response, html) {
-    if(error)throw error;
-    if (!error && response.statusCode == 200) {
+    if(error){console.log( error);
+    html = "blank"}
       var t = extractor(html).text;
       data.parsed.push(t);
       console.log(t);
@@ -150,7 +150,7 @@ app.post('/keywords',function(req,res,next){
         console.log(d);
         res.json({keywords: d});
       }
-    }
+    
   }
   for(var i = 0; i < data.size; i++)
     request(data.urls[i], getResponse);
