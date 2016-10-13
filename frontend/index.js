@@ -29,6 +29,7 @@ $('#lst-ib').keypress(function(e){
 
 function loadit() {
   console.log('loadingit')
+    var len = $('.rc').length;
     $('.rc').each(function(i) {
         var x = data[i] = {};
         x.index = i;
@@ -40,9 +41,13 @@ function loadit() {
             console.log(data);
             x.uid = data.data[0].uid;
             x.votes = data.data[0].votes;
-            
+
             // here is the best place you could inject your html into the element using x.element.innerHTML or something
 
+            if(i == len - 1){
+              //everything is done loading
+              loadkeywords();
+            }
         }
         $.ajax({
             type: 'POST',
@@ -55,6 +60,31 @@ function loadit() {
             success: handledata
         });
     });
+}
+
+
+function loadkeywords(){
+//must run after loadit
+  var urls = [];
+  for(var i = 0; i < data.length; i++){
+    urls.push(data.url)
+  }
+
+  function handledata(rtn) {
+      for(var i = 0; i < rtn.keywords.length; i++){
+        data[i].keywords = rtn.keywords[i];
+      }
+  }
+  $.ajax({
+      type: 'POST',
+      url: "https://vps.boschwitz.me:8443/keywords",
+      data: JSON.stringify({
+          urls: urls
+      }),
+      contentType: 'application/json',
+      dataType: 'json',
+      success: handledata
+  });
 }
 
 
