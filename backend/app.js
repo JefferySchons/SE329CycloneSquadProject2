@@ -9,8 +9,8 @@ var bodyParser = require('body-parser');
   var fs = require('fs');
 
   https.createServer({
-    key: fs.readFileSync('/etc/letsencrypt/live/vps.boschwitz.me/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/vps.boschwitz.me/cert.pem')
+    key: fs.readFileSync('../../privkey.pem'),
+    cert: fs.readFileSync('../../cert.pem')
   }, app).listen(8443);
 // var fs = require('fs')
 // var https = require('https')
