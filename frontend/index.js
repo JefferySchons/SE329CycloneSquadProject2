@@ -43,7 +43,7 @@ function loadit() {
             // here is the best place you could inject your html into the element using x.element.innerHTML or something
 
             if(i == len - 1) {
-              //everything is done loading
+              //everything is done loading here, load keywords
               loadkeywords();
             }
         }
@@ -75,6 +75,8 @@ console.log(data.length)
       for(var i = 0; i < rtn.keywords.length; i++){
         data[i].keywords = rtn.keywords[i];
       }
+      //everything is done
+      afterload();
   }
   console.log({
       urls: urls
@@ -89,6 +91,11 @@ console.log(data.length)
       dataType: 'json',
       success: handledata
   });
+}
+
+function afterload(){
+  //this is called after everything is loaded from the server
+  console.log('everything is loaded');
 }
 
 
