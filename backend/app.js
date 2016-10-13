@@ -32,6 +32,10 @@ https.createServer({
 // server.listen(ports[1])
 // app.listen(ports[0])
 
+console.log("\n\n\n\n\n\n\n\n");
+console.log("New session started");
+console.log(new Date().toString().substring(0,24));
+
 app.use(bodyParser.json({
     type: 'application/json'
 })); // for parsing application/json
