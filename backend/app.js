@@ -16,6 +16,16 @@ app.use(bodyParser.text({
     type: ''
 }));
 
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'https://www.google.com');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+app.use(allowCrossDomain);
+
+
 app.get('/', function(req, res) {
     res.send('Hello World!');
 });
