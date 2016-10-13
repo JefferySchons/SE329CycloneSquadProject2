@@ -26,6 +26,8 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
     var rtn = {};
     rtn.uid = uid;
     rtn.dir = dir;
+    rtn.ready = false;
+
     do {
         if (dir != 'up' && dir != 'down') {
             rtn.error = {
@@ -35,7 +37,8 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
             break;
         }
         console.log('vote', uid, dir);
-        database.query('UPDATE `urls` set `votes` = `votes` ' + (dir == 'up' ? '+' : '-') + ' 1 WHERE `uid` = ?;', [uid], function(err, result) {
+
+        function firstquery(err, result, fields) {
             rtn.db_result = result;
             if (err)
                 rtn.error = err;
@@ -46,66 +49,46 @@ app.get('/vote/:uid/:dir', function(req, res, next) {
                 }
                 console.log("/vote/" + uid + "/" + dir + " - ", result);
             }
-        });
+            rtn.ready = true;
+            res.json(rtn);
+        }
+        database.query('UPDATE `urls` set `votes` = `votes` ' + (dir == 'up' ? '+' : '-') + ' 1 WHERE `uid` = ?;', [uid], firstquery);
     } while (false);
-    res.json(rtn);
+
 
 });
 
+app.post('/geturl', function(req, res, next) {
     var rtn = {};
-app.post('/getinfo', getinfo);
-
-function rtn_init(){
-  var rtn = {};
-}
-
-function rtn_add(key, value){
-  rtn[key] = value;
-}
-
-function rtn_get(){
-  return rtn;
-}
-
-function getinfo(req, res, next) {
-      var data = req.body;
-      var urls = data.urls;
-      var urlsLength = urls.length;
-      rtn = {};
-      rtn.poop = "true";
-      rtn.urls = urls;
-      for (var i = 0; i < urlsLength; i++) {
-          var url = urls[i];
-
-          rtn.queryfunc = function (err, result) {
-
-              rtn_add('db_result', result);
-              if (err)
-                  this.error_sql = err;
-
-              console.log("/getinfo:1", result, err);
-              if (result == undefined || result.length < 1) {
-                  this.otherfunc = function (err, result) {
-                      if (err) {
-                          this.error = {
-                              code: 1001,
-                              message: 'failed to update urls!'
-                          }
-                      }
-                      this.insert_result = result;
-                      console.log("/getinfo:2", result, err);
+    var data = req.body;
+    rtn.req = {};
+    rtn.req.ip = req.ip;
+    rtn.req.cmd = 'geturl';
+    rtn.ready = false;
+    rtn.req.data = data;
 
 
-                  }
+    function firstquery(err, rows, fields) {
+        console.log(arguments);
+        if (err)
+            throw err;
+        if (rows == undefined || rows.length == 0) {
+            database.query("INSERT INTO `urls` (`uid`, `url`, `votes`) VALUES (NULL, ?, '0');", [data.url.substring(0, 80)], secondquery);
+            return;
+        }
+        rtn.data = rows;
+        res.json(rtn);
+    }
 
-                  database.query("INSERT INTO `urls` (`uid`, `url`, `votes`) VALUES (NULL, '?', '0');", [url.substring(0, 80)], this.otherfunc);
-              }
-          }
-          database.query('SELECT * FROM `urls` WHERE `url` = ?', [url.substring(0, 80)], rtn.queryfunc);
-      }
-      res.json(rtn);
+    function secondquery(err, rows, fields) {
+        if (err)
+            throw err;
+        database.query('SELECT * FROM `urls` WHERE `url` = ?', [data.url.substring(0,80)], firstquery);
+    }
 
-}
+    database.query('SELECT * FROM `urls` WHERE `url` = ?', [data.url.substring(0,80)], firstquery);
+
+});
 
 app.listen(3000, function() {
     console.log('Example app listening on port 3000!');

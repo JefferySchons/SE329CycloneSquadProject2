@@ -1,5 +1,5 @@
 {
-  "host":"localhost",
+  "host":"proj-se329-01.cs.iastate.edu",
   "user":"root",
   "pass":"",
   "database":"SearchRank"
