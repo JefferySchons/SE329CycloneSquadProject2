@@ -6,6 +6,7 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "*",
+    "https": "^1.0.0",
     "mysql": "^2.11.1",
     "natural": "^0.4.0",
     "request": "^2.75.0",
