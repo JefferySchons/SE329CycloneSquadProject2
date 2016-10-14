@@ -34,7 +34,7 @@ https.createServer({
 
 console.log("\n\n\n\n\n\n\n\n");
 console.log("New session started");
-console.log(new Date().toString().substring(0,24));
+console.log(new Date().toString().substring(0, 24));
 
 app.use(bodyParser.json({
     type: 'application/json'
@@ -131,6 +131,8 @@ app.post('/geturl', function(req, res, next) {
             throw err;
         database.query('SELECT * FROM `urls` WHERE `url` = ?', [data.url.substring(0, 80)], firstquery);
     }
+    if (data.url == undefined)
+        return;
 
     database.query('SELECT * FROM `urls` WHERE `url` = ?', [data.url.substring(0, 80)], firstquery);
 
