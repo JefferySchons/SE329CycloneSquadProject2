@@ -39,7 +39,7 @@ function loadit() {
             console.log(data);
             x.uid = data.data[0].uid;
             x.votes = data.data[0].votes;
-            x.element.innerHTML = '<table><tbody><tr><td style="text-align:center"><span onclick="vote(this,'+x.index+','+x.uid+',\'up\')"><img src="'+chrome.extension.getURL('/upvote.png')+'" /></span><br><span class="votes">'+x.votes+'</span><br><span onclick="vote(this,'+x.index+','+x.uid+',\'down\')"><img src="'+chrome.extension.getURL('/downvote.png')+'" /></span></td><td>'+x.element.childNodes[0].innerHTML+(x.element.childNodes[1] ?  x.element.childNodes[1].innerHTML : "")+'</td></tr></tbody></table>';
+            x.element.innerHTML = '<table><tbody><tr><td style="text-align:center"><span onclick="vote(this,' + x.index + ',' + x.uid + ',\'up\')"><img src="' + chrome.extension.getURL('/upvote.png') + '" /></span><br><span class="votes">' + x.votes + '</span><br><span onclick="vote(this,' + x.index + ',' + x.uid + ',\'down\')"><img src="' + chrome.extension.getURL('/downvote.png') + '" /></span></td><td>' + x.element.childNodes[0].innerHTML + (x.element.childNodes[1] ? x.element.childNodes[1].innerHTML : "") + '</td></tr></tbody></table>';
             // here is the best place you could inject your html into the element using x.element.innerHTML or something
 
             if (i == len - 1) {
@@ -73,8 +73,8 @@ function loadkeywords() {
     function handledata(rtn) {
         console.log(rtn);
         for (var i = 0; i < rtn.keywords.length; i++) {
-          if(data[i] != undefined)
-          continue;
+            if (data[i] == undefined)
+                continue;
             data[i].keywords = rtn.keywords[i];
 
             var title_keywords = "Top Keywords: ";
@@ -82,7 +82,9 @@ function loadkeywords() {
                 title_keywords += rtn.keywords[i][j].term + ", ";
 
             data[i].title = title_keywords.substring(0, title_keywords.length - 2);
-            $(data[i].element).children('.r').children('a')[0].title = data[i].title;
+            // $(data[i].element).children('.r').children('a')[0].title = data[i].title;
+            console.log($(data[i].element).children('table').children('tbody').children('tr').children('td').children('a'))
+            $(data[i].element).children('table').children('tbody').children('tr').children('td').children('a')[0].title = data[i].title;
             console.log($(data[i].element).children('.r').children('a')[0]);
             console.log(title_keywords)
         }
@@ -116,9 +118,9 @@ function afterload() {
     oReq.open("GET", "https://vps.boschwitz.me:8443/vote/" + uid + "/" + updown);
     oReq.send();
   }`;
-  var th = document.getElementsByTagName('body')[0];
-  th.appendChild(el);
-  console.log(el);
+    var th = document.getElementsByTagName('body')[0];
+    th.appendChild(el);
+    console.log(el);
 }
 
 // function vote(uid, updown) {
