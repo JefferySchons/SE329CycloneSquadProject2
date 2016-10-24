@@ -88,6 +88,7 @@ function loadkeywords() {
             console.log($(data[i].element).children('.r').children('a')[0]);
             console.log(title_keywords)
         }
+        sort();
         //everything is done
         afterload();
     }
@@ -123,6 +124,52 @@ function afterload() {
     console.log(el);
 }
 
+function sort() {
+  console.log('sorting');
+  console.log(data);
+  mergeSort(data);
+  console.log(data);
+}
+
+function mergeSort(arr)
+{
+  if (arr.length === 1)
+    return arr;
+  mid = Math.floor(arr.length / 2);
+  arr1 = arr.slice(0, mid);
+  arr2 = arr.slice(mid, arr.length);
+  return merge(mergeSort(arr1), mergeSort(arr2));
+}
+
+function merge(arr1, arr2)
+{
+  var result = [];
+
+  while(arr1.length || arr2.length)
+  {
+    if(arr1.length && arr2.length)
+    {
+      if(arr1[0].votes > arr2[0].votes)
+      {
+        result.push(arr1.shit());
+      }
+      else
+      {
+        result.push(arr2.shift());
+      }
+    }
+    else if (arr1.length)
+    {
+      result.push(arr1.shift());
+    }
+    else
+    {
+      result.push(arr2.shift());
+    }
+  }
+
+  return result;
+}
 // function vote(uid, updown) {
 //   data[uid].votes = data[uid].votes + (updown == "up" ? 1 : -1);
 //   var x = data[uid];
