@@ -4,9 +4,6 @@ $(window).on('load', function() {
     window.setTimeout(loadit, 1000);
 });
 
-
-
-
 //to fire loadit whenever someone does a new search, i'd do something like
 
 $('.lsb').click(function() {
@@ -22,8 +19,6 @@ $('#lst-ib').keypress(function(e) {
 });
 
 //should do it (I think)
-
-
 
 function loadit() {
     console.log('loadingit')
@@ -124,6 +119,7 @@ function afterload() {
     console.log(el);
 }
 
+//These three functions will sort the data based on the vote integer using merge sort
 function sort() {
   console.log('sorting');
   console.log(data);
@@ -151,7 +147,7 @@ function merge(arr1, arr2)
     {
       if(arr1[0].votes > arr2[0].votes)
       {
-        result.push(arr1.shit());
+        result.push(arr1.shift());
       }
       else
       {
