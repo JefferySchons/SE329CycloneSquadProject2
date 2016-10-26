@@ -129,11 +129,13 @@ function sort() {
 
 function mergeSort(arr)
 {
-  if (arr.length === 1)
+  if (arr.length == 1 || arr.length == 0)
     return arr;
-  mid = Math.floor(arr.length / 2);
-  arr1 = arr.slice(0, mid);
-  arr2 = arr.slice(mid, arr.length);
+  var mid = Math.floor(arr.length / 2);
+  var arr1 = arr.slice(0, mid);
+  var arr2 = arr.slice(mid, arr.length);
+  console.log(arr1)
+  console.log(arr2)
   return merge(mergeSort(arr1), mergeSort(arr2));
 }
 
