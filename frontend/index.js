@@ -123,10 +123,25 @@ function afterload() {
 function sort() {
   console.log('sorting');
   console.log(data);
-  mergeSort(data);
+  insertionSort();
+  //mergeSort(data);
   console.log(data);
 }
 
+function insertionSort()
+{
+  var len = data.length, value, i, j;
+  for(i = 0; i < len; i++)
+  {
+    value = data[i];
+    for(j = i - 1; j > -1 && data[j].votes < value.votes; j--)
+    {
+      data[j+1] = data[j];
+    }
+
+    data[j+1] = value;
+  }
+}
 function mergeSort(arr)
 {
   if (arr.length == 1 || arr.length == 0)
@@ -136,7 +151,7 @@ function mergeSort(arr)
   var arr2 = arr.slice(mid, arr.length);
   console.log(arr1)
   console.log(arr2)
-  return merge(mergeSort(arr1), mergeSort(arr2));
+  arr = merge(mergeSort(arr1), mergeSort(arr2));
 }
 
 function merge(arr1, arr2)
