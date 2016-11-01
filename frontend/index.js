@@ -122,24 +122,33 @@ function afterload() {
 //These three functions will sort the data based on the vote integer using merge sort
 function sort() {
   console.log('sorting');
-  console.log(data);
+  //console.log(data);
   insertionSort();
   //mergeSort(data);
-  console.log(data);
+  //console.log(data);
 }
 
 function insertionSort()
 {
-  var len = data.length, value, i, j;
+  //9, 4, 2, 0, 3...
+  var len = data.length;
+  var value, i, j, votes;
   for(i = 0; i < len; i++)
   {
     value = data[i];
-    for(j = i - 1; j > -1 && data[j].votes < value.votes; j--)
+    for(j = i - 1; j > -1 && Number(data[j].votes) < Number(data[j+1].votes); j--)
     {
-      data[j+1] = data[j];
-    }
+      //console.log(data[j].votes + ' ' + data[j+1].votes + ' ' + j);
+      votes = data[j+1].votes;
+      value = data[j+1].element.innerHTML;
 
-    data[j+1] = value;
+      data[j+1].votes = data[j].votes;
+      data[j+1].element.innerHTML = data[j].element.innerHTML;
+
+      data[j].votes = votes;
+      data[j].element.innerHTML = value;
+      //console.log(value);
+    }
   }
 }
 function mergeSort(arr)
