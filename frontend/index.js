@@ -1,4 +1,5 @@
 var data = [];
+var topKeywords = [];
 
 $(window).on('load', function() {
     window.setTimeout(loadit, 1000);
@@ -74,7 +75,10 @@ function loadkeywords() {
 
             var title_keywords = "Top Keywords: ";
             for (var j = 0; rtn.keywords[i] != null && j < rtn.keywords[i].length && j < 3; j++)
-                title_keywords += rtn.keywords[i][j].term + ", ";
+            {
+               title_keywords += rtn.keywords[i][j].term + ", ";
+               if (j == 0) topKeywords[i] = rtn.keywords[i][j].term;
+            }
 
             data[i].title = title_keywords.substring(0, title_keywords.length - 2);
             // $(data[i].element).children('.r').children('a')[0].title = data[i].title;
@@ -104,6 +108,16 @@ function loadkeywords() {
 
 function afterload() {
     //this is called after everything is loaded from the server
+      var keywordString = "\t\t\tTop keywords = " + topKeywords[0];
+      for(i = 1; i < 5; i++)
+      {
+        keywordString += ", " + topKeywords[i];
+      }
+      var keywordNode = document.createElement('div');
+      keywordNode.appendChild(document.createTextNode(keywordString));
+      keywordNode.style.textAlign = "center";
+      document.getElementById("appbar").appendChild(keywordNode);
+
     console.log('everything is loaded');
     var el = document.createElement('script');
     el.innerHTML = `data = ` + JSON.stringify(data) + `; \n function vote(e, index, uid, updown){
@@ -124,7 +138,6 @@ function sort() {
   console.log('sorting');
   //console.log(data);
   insertionSort();
-  //mergeSort(data);
   //console.log(data);
 }
 
@@ -132,7 +145,7 @@ function insertionSort()
 {
   //9, 4, 2, 0, 3...
   var len = data.length;
-  var value, i, j, votes;
+  var value, i, j, votes, uid;
   for(i = 0; i < len; i++)
   {
     value = data[i];
@@ -141,73 +154,16 @@ function insertionSort()
       //console.log(data[j].votes + ' ' + data[j+1].votes + ' ' + j);
       votes = data[j+1].votes;
       value = data[j+1].element.innerHTML;
+      uid = data[j+1].uid;
 
       data[j+1].votes = data[j].votes;
       data[j+1].element.innerHTML = data[j].element.innerHTML;
+      data[j+1].uid = data[j].uid;
 
       data[j].votes = votes;
       data[j].element.innerHTML = value;
+      data[j].uid = uid;
       //console.log(value);
     }
   }
 }
-function mergeSort(arr)
-{
-  if (arr.length == 1 || arr.length == 0)
-    return arr;
-  var mid = Math.floor(arr.length / 2);
-  var arr1 = arr.slice(0, mid);
-  var arr2 = arr.slice(mid, arr.length);
-  console.log(arr1)
-  console.log(arr2)
-  arr = merge(mergeSort(arr1), mergeSort(arr2));
-}
-
-function merge(arr1, arr2)
-{
-  var result = [];
-
-  while(arr1.length || arr2.length)
-  {
-    if(arr1.length && arr2.length)
-    {
-      if(arr1[0].votes > arr2[0].votes)
-      {
-        result.push(arr1.shift());
-      }
-      else
-      {
-        result.push(arr2.shift());
-      }
-    }
-    else if (arr1.length)
-    {
-      result.push(arr1.shift());
-    }
-    else
-    {
-      result.push(arr2.shift());
-    }
-  }
-
-  return result;
-}
-// function vote(uid, updown) {
-//   data[uid].votes = data[uid].votes + (updown == "up" ? 1 : -1);
-//   var x = data[uid];
-//   x.element.innerHTML = '<table><tr><td style="text-align:center"><span onclick="vote('+x.uid+',\\\"up\\\")">up</span><br><span class="votes">'+x.votes+'</span><br><span onclick="vote('+x.uid+',\'down\')">down</span></td><td>'+x.element.childNodes[0].innerHTML+(x.element.childNodes[1].innerHTML || "")+'</td></tr></table>';
-//
-//     $.get("https://vps.boschwitz.me:8443/vote/" + uid + "/" + updown, function(data) {
-//         //do nothing
-//     });
-// }
-// function injectScript(file, node) {
-//     var th = document.getElementsByTagName(node)[0];
-//     var s = document.createElement('script');
-//     s.setAttribute('type', 'text/javascript');
-//     s.setAttribute('src', file);
-//     th.appendChild(s);
-// }
-// console.log(chrome.extension.getURL('/jquery.min.js'));
-// injectScript( chrome.extension.getURL('/jquery.min.js'), 'body');
-// injectScript( chrome.extension.getURL('/index.js'), 'body');
